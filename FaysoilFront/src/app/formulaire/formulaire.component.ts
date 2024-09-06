@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { EquipeService } from '../services/equipe.service'; // Import du service
 
 @Component({
   selector: 'app-formulaire',
@@ -7,43 +8,60 @@ import { Router } from '@angular/router';
   styleUrls: ['./formulaire.component.scss']
 })
 export class FormulaireComponent {
- 
-  constructor(private router: Router){}
+
+  constructor(private router: Router, private equipeService: EquipeService) {} // Injection du service
   
   nomCapitaine: string = '';
   prenomCapitaine: string = '';
   nomEquipe: string = '';
   joueurs: { nom: string, prenom: string, pseudo: string, dob: string }[] = [{ nom: '', prenom: '', pseudo: '', dob: '' }];
   tournoiChoisi?: string;
-  LeagueOfLegends? : string
-  FIFAPS5? : string
-  FIFAXBOX? : string
-
-    // Méthode pour ajouter un joueur au tableau
-    ajouterJoueur() {
-      this.joueurs.push({ nom: '', prenom: '', pseudo: '', dob:'' });
-    }
   
-    // Méthode pour supprimer un joueur du tableau
-    supprimerJoueur(index: number) {
-      this.joueurs.splice(index, 1);
-    }
+  ajouterJoueur() {
+    this.joueurs.push({ nom: '', prenom: '', pseudo: '', dob:'' });
+  }
 
-    submitForm() {
-        console.log('Form submitted');
-        console.log('Nom de l\'équipe:', this.nomEquipe);
-        console.log('Tournois Choisi:', this.tournoiChoisi);
-        console.log('Joueurs:', this.joueurs);
-        console.log('Nom du capitaine:', this.nomCapitaine);
-      
-    }
+  supprimerJoueur(index: number) {
+    this.joueurs.splice(index, 1);
+  }
 
-    trackByFn(index: number, item: any) {
-      return index; // Retourne l'index comme identifiant unique
-    }
+  // Méthode pour soumettre le formulaire
+  submitForm() {
+    const equipeData = {
+      nomCapitaine: this.nomCapitaine,
+      prenomCapitaine: this.prenomCapitaine,
+      nomEquipe: this.nomEquipe,
+      joueurs: this.joueurs,
+      tournoiChoisi: this.tournoiChoisi
+    };
 
-    retournerAuChoix() {
-      this.router.navigate(['/choix']);
-    }
-    
+    this.equipeService.ajouterEquipe(equipeData).subscribe({
+      next: (response: any) => {
+        console.log('Équipe ajoutée avec succès:', response);
+        this.resetForm();
+        alert('L\'équipe a bien été ajoutée.');
+      },
+      error: (error: any) => {
+        console.error('Erreur lors de l\'ajout de l\'équipe:', error);
+        alert('Erreur lors de l\'ajout de l\'équipe.');
+      }
+    });
+  }
+
+  // Méthode pour reset le formulaire
+  resetForm() {
+    this.nomCapitaine = '';
+    this.prenomCapitaine = '';
+    this.nomEquipe = '';
+    this.joueurs = [{ nom: '', prenom: '', pseudo: '', dob: '' }];
+    this.tournoiChoisi = undefined;
+  }
+
+  trackByFn(index: number, item: any) {
+    return index;
+  }
+
+  retournerAuChoix() {
+    this.router.navigate(['/choix']);
+  }
 }

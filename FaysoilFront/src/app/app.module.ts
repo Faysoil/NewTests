@@ -7,6 +7,7 @@ import { FormulaireComponent } from './formulaire/formulaire.component';
 import { FormsModule } from '@angular/forms';
 import { FormulaireSoloComponent } from './formulaire-solo/formulaire-solo.component';
 import { ChoixComponent } from './choix/choix.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,12 +15,13 @@ import { ChoixComponent } from './choix/choix.component';
     ConnexionComponent,
     FormulaireComponent,
     FormulaireSoloComponent,
-    ChoixComponent,
+    ChoixComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
